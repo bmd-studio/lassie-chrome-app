@@ -1,0 +1,34 @@
+{
+  "name": "Lassie App",
+  "version": "1",
+  "manifest_version": 2,
+  "permissions": [
+    "serial",
+    "usb",
+    {
+      "usbDevices": [
+        { "vendorId": 1254, "productId": 21905 }, // SCL3711
+        { "vendorId": 1839, "productId": 8704 }   // ACR122U
+      ]
+    },
+    "storage",
+    "fullscreen",
+    "webview",
+    "http://*/"
+  ],
+  "minimum_chrome_version": "23",
+  "icons": {
+    "16": "images/icon_16.png",
+    "128": "images/icon_128.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["scripts/Background.js"]
+    }
+  },
+  "sandbox": {
+    "pages": [
+      "views/sandbox.html"
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="chrome_app" ng-csp>
+  <head>
+
+    <!-- styles -->
+    <link rel="stylesheet" type="text/css" href="../styles/import.css">
+  </head>
+
+  <body>
+
+    <!-- web view -->
+    <webview id="webview" src="http://localhost/boris-dev/app/" width="100%" height="100%"></webview>
+
+    <!-- loader overlay -->
+    <div class="loader-overlay overall">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    </div>
+
+    <!-- command panel -->
+    <div id="command-panel" ng-controller="command_panel_controller">
+
+      <div class="panel-group">
+        <h1>{{ distribution }}</h1>
+      </div>
+
+      <div class="panel-group">
+        <h2>NCF Readers</h2>
+        <ul class="default-button-list">
+          <li ng-repeat="reader in nfcReaders">
+            <a href="#">{{ reader.productId }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel-group">
+        <h2>Card Terminals</h2>
+        <ul class="default-button-list">
+          <li ng-repeat="terminal in cardTerminals">
+            <a href="#">{{ terminal.name }}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="toggle-button">
+        <i class="glyphicon-chevron-right"></i>
+      </div>
+
+      <span class="system-identifier">{{ systemName }} {{ systemVersion }}</span>
+    </div>
+
+    <!-- app booter -->
+    <script type="text/javascript" src="../scripts/Booter.js"></script>
+  </body>
+</html>
