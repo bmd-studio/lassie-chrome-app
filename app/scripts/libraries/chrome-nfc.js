@@ -1033,7 +1033,18 @@ usbSCL3711.prototype.read = function(timeout, cb) {
                       console.log("DEBUG: InListPassiveTarget SENS_REQ(ATQA)=0x" + (f[9] * 256 + f[10]).toString(16) + ", SEL_RES(SAK)=0x" + f[11].toString(16));
                       var NFCIDLength = f[12];
                       var tag_id = (new Uint8Array(f.subarray(13, 13 + NFCIDLength))).buffer;
-                      console.log("DEBUG: tag_id: " + UTIL_BytesToHex(new Uint8Array(tag_id)));
+
+                      // edited to support Lassie integration
+                      var formatted_tag_id = UTIL_BytesToHex(new Uint8Array(tag_id));
+
+                      // debug
+                      console.log("DEBUG: tag_id: " + formatted_tag_id);
+
+                      // send the tag to the NFC manager
+                      if (getEngine() != undefined) {
+                        getEngine().getNFCReaderManager().handleRFID(formatted_tag_id);
+                      }
+
                       if (f[9] == 0 && f[10] == 68) {
                         console.log("DEBUG: found Mifare Ultralight (106k type A)");
                         self.detected_tag = "Mifare Ultralight";

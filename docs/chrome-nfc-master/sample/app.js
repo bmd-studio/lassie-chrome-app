@@ -129,33 +129,33 @@ function emulateTag(ndefType, ndefValue, callback) {
 function showDeviceInfo() {
   var deviceInfo = null;
   for (var i = 0; i < compatibleDevices.length; i++)
-    if (device.productId === compatibleDevices[i].productId && 
+    if (device.productId === compatibleDevices[i].productId &&
         device.vendorId === compatibleDevices[i].vendorId)
       deviceInfo = compatibleDevices[i];
-    
+
   if (!deviceInfo)
     return;
-  
+
   var thumbnail = document.querySelector('#device-thumbnail');
   thumbnail.src = deviceInfo.thumbnailURL;
   thumbnail.classList.remove('hidden');
-  
+
   var deviceName = document.querySelector('#device-name');
   deviceName.textContent = deviceInfo.deviceName;
-  
+
   var productId = document.querySelector('#device-product-id');
   productId.textContent = deviceInfo.productId;
-  
+
   var vendorId = document.querySelector('#device-vendor-id');
   vendorId.textContent = deviceInfo.vendorId;
-  
+
   $('a[href="#device-info"]').tab('show');
 }
 
 function enumerateDevices() {
   chrome.nfc.findDevices(function(devices) {
     device = devices[0];
-    showDeviceInfo(); 
+    showDeviceInfo();
   });
 }
 

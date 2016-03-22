@@ -34,9 +34,6 @@ var MessageManager = Class.create(Manager, {
     // get the webview element
     this.webview = document.getElementById('webview');
 
-    setTimeout(function() {
-      $(this.webview).attr('src', 'http://localhost/boris-dev/app/');
-    }, 8000);
     // initialize the parent class
     $super(1000);
   },
@@ -46,8 +43,6 @@ var MessageManager = Class.create(Manager, {
    */
   run : function() {
 
-    // test
-    //this.sendMessage(this.RFID_PACKET_ID, '0221422829');
   },
 
   /**
@@ -63,6 +58,20 @@ var MessageManager = Class.create(Manager, {
 
     // send the message
     this.sendMessage(this.RAW_NFC_PACKET_ID, data);
+  },
+
+  /**
+   * Send raw NFC data
+   */
+  sendRFID : function(rfid) {
+
+    // variables
+    var data = {
+      'rfid' : rfid
+    };
+
+    // send the message
+    this.sendMessage(this.RFID_PACKET_ID, data);
   },
 
   /**

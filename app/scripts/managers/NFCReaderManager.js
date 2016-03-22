@@ -11,7 +11,7 @@ var NFCReaderManager = Class.create(Manager, {
   /**
    * Variables
    */
-  // empty
+  devices : [],
 
   /**
    * Initialize
@@ -19,10 +19,10 @@ var NFCReaderManager = Class.create(Manager, {
   initialize: function ($super) {
 
     // debug all available devices
-    this.debugDevices();
+    this.updateDevices();
 
     // initialize the parent class
-    $super(500);
+    $super(1000);
   },
 
   /**
@@ -70,40 +70,102 @@ var NFCReaderManager = Class.create(Manager, {
   },
 
   /**
-   * Perform read
+   * Update the devices
    */
-  read : function() {
+  updateDevices : function() {
 
-    // perform find first
-    chrome.nfc.findDevices(function(devices) {
+    // variables
+    var thisObject = this;
 
-      // guard: check if there were any devices
-      if (devices.length <= 0) {
-        return;
-      }
+    // get all the devices
+    this.getDevices(function(devices) {
+
+      // variables
+      var nfcReaders = [];
 
       // loop all the devices
       for (var i = 0; i < devices.length; i++) {
 
-        // get the first device
+        // variables
         var device = devices[i];
+        var vendorId = device.vendorId;
+        var productId = device.productId;
 
-        // perform the read
-        chrome.nfc.read(device, {}, function(type, ndef) {
+        // get the name
+        var name = getEngine().getNFCReaderManager().getName(vendorId, productId);
 
-          // variables
-          var uri = ndef.ndef[0].uri;
-          var text = ndef.ndef[1].text;
+        // set the name
+        device.name = name;
 
-          // debug
-          debug('New NFC data received with type: '+ type +', ndef: ');
-          debug(ndef);
-
-          // send it to the webview
-          getEngine().getMessageManager().sendRawNFCData(type, ndef);
-        });
+        // add the device
+        nfcReaders.push(device);
       }
+
+      // update the devices
+      thisObject.devices = nfcReaders;
+
+      // update the UI
+      getEngine().getCommandPanelController().setNFCReaders(nfcReaders);
     });
+  },
+
+  /**
+   * Perform read
+   */
+  read : function() {
+
+    // loop all the devices
+    for (var i = 0; i < this.devices.length; i++) {
+
+      // get the first device
+      var device = this.devices[i];
+
+      // debug
+      debug('Reading device...');
+
+      /*var blockNumber = 0; // starting logic block number.
+        var blocksCount = 1; // logic block counts.
+        chrome.nfc.read_logic(device, blockNumber, blocksCount, function(rc, data) {
+          log('Mifare Classic Tag', UTIL_BytesToHex(data));
+        });*/
+
+      // perform the read
+      chrome.nfc.read(device, {}, function(type, ndef) {
+
+        // variables
+        var uri = ndef.ndef[0].uri;
+        var text = ndef.ndef[1].text;
+
+        // debug
+        debug('New NFC data received with type: '+ type +', ndef: ');
+        debug(ndef);
+
+        // send it to the webview
+        getEngine().getMessageManager().sendRawNFCData(type, ndef);
+      });
+    }
+  },
+
+  /**
+   * Handle a new identifier of a tag
+   */
+  handleRFID : function(rfid) {
+
+    // send it to the webview
+    getEngine().getMessageManager().sendRFID(rfid);
+  },
+
+  /**
+   * Get the name of a NFC reader
+   */
+  getName : function(vendorId, productId) {
+
+    // ACR122U
+    if (vendorId == 1839 && productId == 8704) {
+      return 'ACR122U NCF Reader';
+    }
+
+    return 'Unknown Reader';
   },
 
   /**

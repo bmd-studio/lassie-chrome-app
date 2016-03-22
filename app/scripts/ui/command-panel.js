@@ -57,7 +57,7 @@ angularChromeApp.controller('command_panel_controller', ['$scope', function($sco
     setInterval(function() {
 
       // update the NFC readers
-      $scope.updateNFCReaders();
+      //$scope.updateNFCReaders();
     }, ONE_SECOND);
 
     // check for a development environment
@@ -74,9 +74,9 @@ angularChromeApp.controller('command_panel_controller', ['$scope', function($sco
         ];
 
         // set to dummy nfc readers
-        $scope.nfcReaders = [
+        /*$scope.nfcReaders = [
           { productId : 'ACS Dummy', vendorId : 'ACS Dummy' }
-        ];
+        ];*/
 
         // set to dummy card terminals
         $scope.cardTerminals = [
@@ -105,6 +105,24 @@ angularChromeApp.controller('command_panel_controller', ['$scope', function($sco
        * Show and hide the command panel
        */
       $('#command-panel .toggle-button').click(function() {
+
+        var vendorId = 0x072f;
+        var productId = 0x2200;
+
+        function onDeviceFound(devices) {
+          this.devices=devices;
+          if (devices) {
+            if (devices.length > 0) {
+              console.log("Device(s) found: "+devices.length);
+            } else {
+              console.log("Device could not be found");
+            }
+          } else {
+            console.log("Permission denied.");
+          }
+        }
+
+        chrome.usb.getDevices({"vendorId": vendorId, "productId": productId}, onDeviceFound);
 
         // check if closed
         if ($('#command-panel').hasClass('open')) {
@@ -157,27 +175,8 @@ angularChromeApp.controller('command_panel_controller', ['$scope', function($sco
    */
   $scope.updateNFCReaders = function() {
 
-      // get all the devices
-      getEngine().getNFCReaderManager().getDevices(function(devices) {
-
-        // variables
-        var nfcReaders = [];
-
-        // loop all the devices
-        for (var i = 0; i < devices.length; i++) {
-
-          // variables
-          var device = devices[i];
-
-          // add the device
-          nfcReaders.push(device);
-        }
-
-        nfcReaders.push({ vendorId : 'UAR34', productId : 'ASC39'});
-
-        // update the UI
-        $scope.setNFCReaders(nfcReaders);
-      });
+    // update the NFC readers
+    getEngine().getNFCReaderManager().updateNFCReaders();
   };
 
   /**

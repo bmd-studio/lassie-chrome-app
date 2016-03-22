@@ -900,8 +900,8 @@ function usbSCL3711() {
   this.authed_sector = null;
   this.KEYS = [new Uint8Array([255, 255, 255, 255, 255, 255]), new Uint8Array([211, 247, 211, 247, 211, 247]), new Uint8Array([160, 161, 162, 163, 164, 165])];
   this.strerror = function(errno) {
-    var err = {1:"time out, the target has not answered", 2:"checksum error during rf communication", 3:"parity error during rf communication", 4:"erroneous bit count in anticollision", 5:"framing error during mifare operation", 6:"abnormal bit collision in 106 kbps anticollision", 7:"insufficient communication buffer size", 9:"rf buffer overflow detected by ciu", 10:"rf field not activated in time by active mode peer", 11:"protocol error during rf communication", 13:"overheated - antenna drivers deactivated", 
-    14:"internal buffer overflow", 16:"invalid command parameter", 18:"unsupported command from initiator", 19:"format error during rf communication", 20:"mifare authentication error", 24:"not support NFC secure", 25:"i2c bus line is busy", 35:"wrong uid check byte (14443-3)", 37:"command invalid in current dep state", 38:"operation not allowed in this configuration", 39:"not acceptable command due to context", 41:"released by initiator while operating as target", 42:"card ID does not match", 43:"the card previously activated has disapperaed", 
+    var err = {1:"time out, the target has not answered", 2:"checksum error during rf communication", 3:"parity error during rf communication", 4:"erroneous bit count in anticollision", 5:"framing error during mifare operation", 6:"abnormal bit collision in 106 kbps anticollision", 7:"insufficient communication buffer size", 9:"rf buffer overflow detected by ciu", 10:"rf field not activated in time by active mode peer", 11:"protocol error during rf communication", 13:"overheated - antenna drivers deactivated",
+    14:"internal buffer overflow", 16:"invalid command parameter", 18:"unsupported command from initiator", 19:"format error during rf communication", 20:"mifare authentication error", 24:"not support NFC secure", 25:"i2c bus line is busy", 35:"wrong uid check byte (14443-3)", 37:"command invalid in current dep state", 38:"operation not allowed in this configuration", 39:"not acceptable command due to context", 41:"released by initiator while operating as target", 42:"card ID does not match", 43:"the card previously activated has disapperaed",
     44:"Mismatch between NFCID3 initiator and target in DEP 212/424 kbps", 45:"Over-current event has been detected", 46:"NAD missing in DEP frame", 47:"deselected by initiator while operating as target", 49:"initiator rf-off state detected in passive mode", 127:"pn53x application level error"};
     if (errno in err) {
       return "[" + errno + "] " + err[errno];
@@ -1028,6 +1028,8 @@ usbSCL3711.prototype.read = function(timeout, cb) {
                   schedule_cb(0, (new Uint8Array(f.subarray(7, f.length - 2))).buffer);
                   return;
                 } else {
+                  console.log('TTTTTTTTTTTTTTTTT');
+                  console.log(f);
                   if (f[5] == 213 && f[6] == 75) {
                     if (f[7] == 1 && f[8] == 1) {
                       console.log("DEBUG: InListPassiveTarget SENS_REQ(ATQA)=0x" + (f[9] * 256 + f[10]).toString(16) + ", SEL_RES(SAK)=0x" + f[11].toString(16));
@@ -1489,7 +1491,7 @@ function SHA256() {
   this._buf = new Array(64);
   this._W = new Array(64);
   this._pad = new Array(64);
-  this._k = [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411, 
+  this._k = [1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986, 2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411,
   3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344, 430227734, 506948616, 659060556, 883997877, 958139571, 1322822218, 1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424, 2428436474, 2756734187, 3204031479, 3329325298];
   this._pad[0] = 128;
   for (var i = 1;i < 64;++i) {
