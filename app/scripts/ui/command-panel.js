@@ -68,7 +68,7 @@ angularChromeApp.controller('command_panel_controller', ['$scope', function($sco
 
         // set to distributions
         $scope.distributions = [
-          { name : 'Local @ Pep', host : 'http://localhost/boris-dev/app/' },
+          { name : 'Local @ Pep', host : 'http://localhost/lassie-core-dev/app/' },
           { name : 'Local @ Paul', host : 'http://localhost/boris/app/' },
           { name : 'Local @ Joep', host : 'http://localhost/boris/app/' },
         ];
